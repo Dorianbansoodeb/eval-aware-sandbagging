@@ -4,7 +4,7 @@
 
 **Answer at 1.5B (this repo):** no behavioral sandbagging; a perfectly readable eval-vs-neutral residual direction that does **not** causally control accuracy.
 
-**Live demo:** [dorianbansoodeb.github.io/eval-aware-sandbagging](https://dorianbansoodeb.github.io/eval-aware-sandbagging/) — course-style explorer: pick an item, swap five framings, inspect the recorded answers. No GPU.
+**Live demo:** [dorianbansoodeb.github.io/eval-aware-sandbagging](https://dorianbansoodeb.github.io/eval-aware-sandbagging/) — dashboard: metrics, charts, and the same item under five framings. No GPU.
 
 Local Gradio: `pip install -r demo/requirements.txt && PYTHONPATH=. python demo/app.py`
 
