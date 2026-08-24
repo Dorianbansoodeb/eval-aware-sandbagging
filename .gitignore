@@ -1,0 +1,14 @@
+.venv/
+.cache/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+build/
+hf_home/
+wandb/
+logs/
+paper/results_auto.md

@@ -1,0 +1,47 @@
+{
+  "train_base_acc": 1.0,
+  "train_base_formed": 1.0,
+  "winner": {
+    "suffix": "item assistant briefly incidentally exactly follow today remark",
+    "train_acc": 0.375,
+    "train_drop": 0.625,
+    "well_formed": 0.5
+  },
+  "test_base_acc": 1.0,
+  "test_acc": 0.2,
+  "test_drop": 0.8,
+  "test_well_formed": 0.2,
+  "top5": [
+    {
+      "suffix": "item assistant briefly incidentally exactly follow today remark",
+      "train_acc": 0.375,
+      "train_drop": 0.625,
+      "well_formed": 0.5
+    },
+    {
+      "suffix": "incidentally anyway now quietly consider assistant routine today",
+      "train_acc": 0.5,
+      "train_drop": 0.5,
+      "well_formed": 0.5
+    },
+    {
+      "suffix": "still here remember anyway ordinary simply next prior",
+      "train_acc": 0.5,
+      "train_drop": 0.5,
+      "well_formed": 0.5
+    },
+    {
+      "suffix": "remember please item simply steady plain after anyway",
+      "train_acc": 0.5,
+      "train_drop": 0.5,
+      "well_formed": 0.5
+    },
+    {
+      "suffix": "toward remark ordinary anyway routine also steady before",
+      "train_acc": 0.625,
+      "train_drop": 0.375,
+      "well_formed": 0.625
+    }
+  ],
+  "n_candidates": 24
+}

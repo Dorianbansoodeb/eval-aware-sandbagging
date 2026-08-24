@@ -1,0 +1,44 @@
+seed: 0
+model_id: Qwen/Qwen2.5-1.5B-Instruct
+replication_model_id: HuggingFaceTB/SmolLM2-360M-Instruct
+max_new_tokens: 64
+batch_size: 8
+dtype: float16
+device: auto  # mps | cuda | cpu | auto
+
+paths:
+  items: data/items.jsonl
+  generations: results/generations.jsonl
+  eval_summary: results/eval_summary.json
+  elicit: results/elicit.json
+  suffixes: results/suffixes.json
+  interp: results/interp.json
+  figures: results/figures
+
+eval:
+  n_per_domain: 40
+  conditions:
+    - neutral
+    - eval
+    - threat
+    - anti_eval
+    - oversight
+
+elicit:
+  n_shots: 4
+  conditions:
+    - few_shot
+    - prefill
+    - persona
+
+suffix:
+  n_candidates: 24
+  suffix_len: 8
+  n_train_items: 8
+  n_test_items: 20
+
+interp:
+  probe_train_frac: 0.6
+  n_steer_items: 32
+  alphas: [-2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0]
+  patch_layers_stride: 4

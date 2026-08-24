@@ -1,0 +1,120 @@
+{"id": "math-036", "domain": "math", "task": "What is 50% of 40?", "gold": "20", "kind": "percent", "split": "train"}
+{"id": "math-017", "domain": "math", "task": "A train travels at 30 km/h for 3 hours. How many kilometers does it travel?", "gold": "90", "kind": "speed", "split": "train"}
+{"id": "math-012", "domain": "math", "task": "A train travels at 60 km/h for 5 hours. How many kilometers does it travel?", "gold": "300", "kind": "speed", "split": "train"}
+{"id": "code-035", "domain": "code", "task": "What does this Python code print?\n```python\nprint(8 * 2 + 3)\n```", "gold": "19", "kind": "print_predict", "split": "train"}
+{"id": "math-022", "domain": "math", "task": "A train travels at 30 km/h for 4 hours. How many kilometers does it travel?", "gold": "120", "kind": "speed", "split": "train"}
+{"id": "math-002", "domain": "math", "task": "A train travels at 50 km/h for 5 hours. How many kilometers does it travel?", "gold": "250", "kind": "speed", "split": "train"}
+{"id": "code-038", "domain": "code", "task": "What does this Python code print?\n```python\nprint(5 * 3 + 8)\n```", "gold": "23", "kind": "print_predict", "split": "train"}
+{"id": "enc-038", "domain": "encoding", "task": "Decode this ASCII hex string:\n706562626c65206365646172", "gold": "pebble cedar", "kind": "hex", "split": "train"}
+{"id": "enc-022", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\namFzcGVyIHdpbGxvdyBkZWx0YSByaXBwbGU=", "gold": "jasper willow delta ripple", "kind": "base64", "split": "train"}
+{"id": "math-027", "domain": "math", "task": "A train travels at 50 km/h for 3 hours. How many kilometers does it travel?", "gold": "150", "kind": "speed", "split": "train"}
+{"id": "math-035", "domain": "math", "task": "A shop starts with 63 mugs, sells 5, then receives 21 new ones. How many mugs does it have?", "gold": "79", "kind": "inventory", "split": "train"}
+{"id": "code-024", "domain": "code", "task": "What does this Python code print?\n```python\nprint(sum(range(0, 7, 3)))\n```", "gold": "9", "kind": "print_predict", "split": "train"}
+{"id": "enc-006", "domain": "encoding", "task": "Decode this ROT13 string:\nmrcule vibel qhfx evccyr", "gold": "zephyr ivory dusk ripple", "kind": "rot13", "split": "train"}
+{"id": "math-003", "domain": "math", "task": "Split 24 tokens equally among 3 people. How many does each get?", "gold": "8", "kind": "split", "split": "train"}
+{"id": "enc-017", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\naGFyYm9yIHhlbm9uIGtldHRsZQ==", "gold": "harbor xenon kettle", "kind": "base64", "split": "train"}
+{"id": "code-025", "domain": "code", "task": "What does this Python code print?\n```python\nprint(\"banana\".count(\"a\"))\n```", "gold": "3", "kind": "print_predict", "split": "train"}
+{"id": "enc-023", "domain": "encoding", "task": "Decode this ASCII hex string:\n616e63686f72206475736b20726970706c65", "gold": "anchor dusk ripple", "kind": "hex", "split": "train"}
+{"id": "code-033", "domain": "code", "task": "What does this Python code print?\n```python\nprint(6 * 3 + 5)\n```", "gold": "23", "kind": "print_predict", "split": "train"}
+{"id": "math-013", "domain": "math", "task": "Split 60 tokens equally among 6 people. How many does each get?", "gold": "10", "kind": "split", "split": "train"}
+{"id": "code-004", "domain": "code", "task": "What does this Python code print?\n```python\nprint(21 + 6)\n```", "gold": "27", "kind": "print_predict", "split": "train"}
+{"id": "code-013", "domain": "code", "task": "What does this Python code print?\n```python\nxs = [20, 4, 24]\nprint(sum(xs))\n```", "gold": "48", "kind": "print_predict", "split": "train"}
+{"id": "enc-035", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\ncedar ivory orchid", "gold": "dihcro yrovi radec", "kind": "reverse", "split": "train"}
+{"id": "math-009", "domain": "math", "task": "Compute 3 * 3 - 3.", "gold": "6", "kind": "multi", "split": "train"}
+{"id": "code-036", "domain": "code", "task": "What does this Python code print?\n```python\nprint(4 * 5 + 2)\n```", "gold": "22", "kind": "print_predict", "split": "train"}
+{"id": "math-028", "domain": "math", "task": "Split 24 tokens equally among 4 people. How many does each get?", "gold": "6", "kind": "split", "split": "train"}
+{"id": "enc-029", "domain": "encoding", "task": "This is a Caesar cipher with shift 1 (letters only). Decrypt:\njwpsz qfccmf djoefs wfmwfu", "gold": "ivory pebble cinder velvet", "kind": "caesar", "split": "train"}
+{"id": "math-026", "domain": "math", "task": "What is 10% of 80?", "gold": "8", "kind": "percent", "split": "train"}
+{"id": "math-000", "domain": "math", "task": "A shop starts with 58 mugs, sells 8, then receives 28 new ones. How many mugs does it have?", "gold": "78", "kind": "inventory", "split": "train"}
+{"id": "code-021", "domain": "code", "task": "What does this Python code print?\n```python\nprint(sum(range(0, 8, 3)))\n```", "gold": "9", "kind": "print_predict", "split": "train"}
+{"id": "math-005", "domain": "math", "task": "A shop starts with 34 mugs, sells 17, then receives 14 new ones. How many mugs does it have?", "gold": "31", "kind": "inventory", "split": "train"}
+{"id": "code-020", "domain": "code", "task": "What does this Python code print?\n```python\nprint(sum(range(0, 6, 2)))\n```", "gold": "6", "kind": "print_predict", "split": "train"}
+{"id": "enc-004", "domain": "encoding", "task": "This is a Caesar cipher with shift 2 (letters only). Decrypt:\nswctvb godgt", "gold": "quartz ember", "kind": "caesar", "split": "train"}
+{"id": "enc-030", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\ndusk bridge", "gold": "egdirb ksud", "kind": "reverse", "split": "train"}
+{"id": "math-033", "domain": "math", "task": "Split 24 tokens equally among 6 people. How many does each get?", "gold": "4", "kind": "split", "split": "train"}
+{"id": "math-016", "domain": "math", "task": "What is 25% of 120?", "gold": "30", "kind": "percent", "split": "train"}
+{"id": "math-021", "domain": "math", "task": "What is 10% of 80?", "gold": "8", "kind": "percent", "split": "train"}
+{"id": "enc-016", "domain": "encoding", "task": "Decode this ROT13 string:\ngvzore crooyr", "gold": "timber pebble", "kind": "rot13", "split": "train"}
+{"id": "code-037", "domain": "code", "task": "What does this Python code print?\n```python\nprint(3 * 2 + 3)\n```", "gold": "9", "kind": "print_predict", "split": "train"}
+{"id": "math-007", "domain": "math", "task": "A train travels at 30 km/h for 3 hours. How many kilometers does it travel?", "gold": "90", "kind": "speed", "split": "train"}
+{"id": "enc-002", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\nbWFwbGUgZHVzayB6ZXBoeXI=", "gold": "maple dusk zephyr", "kind": "base64", "split": "train"}
+{"id": "code-001", "domain": "code", "task": "What does this Python code print?\n```python\nprint(7 + 11)\n```", "gold": "18", "kind": "print_predict", "split": "train"}
+{"id": "code-012", "domain": "code", "task": "What does this Python code print?\n```python\nxs = [11, 7, 18]\nprint(sum(xs))\n```", "gold": "36", "kind": "print_predict", "split": "train"}
+{"id": "math-008", "domain": "math", "task": "Split 48 tokens equally among 3 people. How many does each get?", "gold": "16", "kind": "split", "split": "train"}
+{"id": "enc-000", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\nyield cobalt nickel", "gold": "lekcin tlaboc dleiy", "kind": "reverse", "split": "train"}
+{"id": "math-004", "domain": "math", "task": "Compute 7 * 10 - 8.", "gold": "62", "kind": "multi", "split": "train"}
+{"id": "enc-039", "domain": "encoding", "task": "This is a Caesar cipher with shift 1 (letters only). Decrypt:\nlfuumf cbsmfz hspwf ibscps", "gold": "kettle barley grove harbor", "kind": "caesar", "split": "train"}
+{"id": "enc-034", "domain": "encoding", "task": "This is a Caesar cipher with shift 3 (letters only). Decrypt:\nfredow yhoyhw", "gold": "cobalt velvet", "kind": "caesar", "split": "train"}
+{"id": "math-025", "domain": "math", "task": "A shop starts with 70 mugs, sells 12, then receives 10 new ones. How many mugs does it have?", "gold": "68", "kind": "inventory", "split": "train"}
+{"id": "code-002", "domain": "code", "task": "What does this Python code print?\n```python\nprint(12 + 8)\n```", "gold": "20", "kind": "print_predict", "split": "train"}
+{"id": "code-019", "domain": "code", "task": "What does this Python code print?\n```python\ns = \"patch\"\nprint(s[::-1])\n```", "gold": "hctap", "kind": "print_predict", "split": "train"}
+{"id": "code-011", "domain": "code", "task": "What does this Python code print?\n```python\nxs = [8, 5, 13]\nprint(sum(xs))\n```", "gold": "26", "kind": "print_predict", "split": "train"}
+{"id": "math-014", "domain": "math", "task": "Compute 9 * 8 - 8.", "gold": "64", "kind": "multi", "split": "train"}
+{"id": "enc-020", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\ncinder kettle", "gold": "elttek rednic", "kind": "reverse", "split": "train"}
+{"id": "code-028", "domain": "code", "task": "What does this Python code print?\n```python\nprint(\"success\".count(\"c\"))\n```", "gold": "2", "kind": "print_predict", "split": "train"}
+{"id": "enc-031", "domain": "encoding", "task": "Decode this ROT13 string:\npbonyg jvyybj", "gold": "cobalt willow", "kind": "rot13", "split": "train"}
+{"id": "math-010", "domain": "math", "task": "A shop starts with 53 mugs, sells 12, then receives 16 new ones. How many mugs does it have?", "gold": "57", "kind": "inventory", "split": "train"}
+{"id": "code-016", "domain": "code", "task": "What does this Python code print?\n```python\ns = \"qwen\"\nprint(s[::-1])\n```", "gold": "newq", "kind": "print_predict", "split": "train"}
+{"id": "math-039", "domain": "math", "task": "Compute 5 * 5 - 7.", "gold": "18", "kind": "multi", "split": "train"}
+{"id": "code-003", "domain": "code", "task": "What does this Python code print?\n```python\nprint(19 + 4)\n```", "gold": "23", "kind": "print_predict", "split": "train"}
+{"id": "code-000", "domain": "code", "task": "What does this Python code print?\n```python\nprint(3 + 5)\n```", "gold": "8", "kind": "print_predict", "split": "train"}
+{"id": "code-029", "domain": "code", "task": "What does this Python code print?\n```python\nprint(max([1, 4, 9]) - min([1, 4, 9]))\n```", "gold": "8", "kind": "print_predict", "split": "train"}
+{"id": "enc-036", "domain": "encoding", "task": "Decode this ROT13 string:\niryirg hzoen jvyybj", "gold": "velvet umbra willow", "kind": "rot13", "split": "train"}
+{"id": "enc-009", "domain": "encoding", "task": "This is a Caesar cipher with shift 2 (letters only). Decrypt:\nmgvvng rgddng tkrrng fgnvc", "gold": "kettle pebble ripple delta", "kind": "caesar", "split": "train"}
+{"id": "math-019", "domain": "math", "task": "Compute 8 * 8 - 8.", "gold": "56", "kind": "multi", "split": "train"}
+{"id": "code-030", "domain": "code", "task": "What does this Python code print?\n```python\nprint(max([2, 3, 5, 7]) - min([2, 3, 5, 7]))\n```", "gold": "5", "kind": "print_predict", "split": "train"}
+{"id": "enc-019", "domain": "encoding", "task": "This is a Caesar cipher with shift 2 (letters only). Decrypt:\njctdqt bgrjat godgt tkrrng", "gold": "harbor zephyr ember ripple", "kind": "caesar", "split": "train"}
+{"id": "code-006", "domain": "code", "task": "What does this Python code print?\n```python\nprint(15 + 15)\n```", "gold": "30", "kind": "print_predict", "split": "train"}
+{"id": "math-038", "domain": "math", "task": "Split 48 tokens equally among 4 people. How many does each get?", "gold": "12", "kind": "split", "split": "train"}
+{"id": "code-018", "domain": "code", "task": "What does this Python code print?\n```python\ns = \"probe\"\nprint(s[::-1])\n```", "gold": "eborp", "kind": "print_predict", "split": "train"}
+{"id": "code-039", "domain": "code", "task": "What does this Python code print?\n```python\nprint(3 * 7 + 3)\n```", "gold": "24", "kind": "print_predict", "split": "train"}
+{"id": "enc-013", "domain": "encoding", "task": "Decode this ASCII hex string:\n7a6570687972206475736b", "gold": "zephyr dusk", "kind": "hex", "split": "train"}
+{"id": "enc-018", "domain": "encoding", "task": "Decode this ASCII hex string:\n6261726c65792063696e6465722067726f7665206475736b", "gold": "barley cinder grove dusk", "kind": "hex", "split": "train"}
+{"id": "math-030", "domain": "math", "task": "A shop starts with 29 mugs, sells 8, then receives 18 new ones. How many mugs does it have?", "gold": "39", "kind": "inventory", "split": "test"}
+{"id": "enc-005", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\nyield delta", "gold": "atled dleiy", "kind": "reverse", "split": "test"}
+{"id": "enc-026", "domain": "encoding", "task": "Decode this ROT13 string:\nxrggyr prqne uneobe", "gold": "kettle cedar harbor", "kind": "rot13", "split": "test"}
+{"id": "enc-032", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\ndmVsdmV0IG1hcGxlIGFuY2hvciB3aWxsb3c=", "gold": "velvet maple anchor willow", "kind": "base64", "split": "test"}
+{"id": "math-024", "domain": "math", "task": "Compute 12 * 7 - 4.", "gold": "80", "kind": "multi", "split": "test"}
+{"id": "code-023", "domain": "code", "task": "What does this Python code print?\n```python\nprint(sum(range(0, 10, 2)))\n```", "gold": "20", "kind": "print_predict", "split": "test"}
+{"id": "enc-015", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\nanchor zephyr velvet umbra", "gold": "arbmu tevlev ryhpez rohcna", "kind": "reverse", "split": "test"}
+{"id": "math-031", "domain": "math", "task": "What is 25% of 80?", "gold": "20", "kind": "percent", "split": "test"}
+{"id": "math-020", "domain": "math", "task": "A shop starts with 67 mugs, sells 15, then receives 8 new ones. How many mugs does it have?", "gold": "60", "kind": "inventory", "split": "test"}
+{"id": "code-027", "domain": "code", "task": "What does this Python code print?\n```python\nprint(\"committee\".count(\"t\"))\n```", "gold": "2", "kind": "print_predict", "split": "test"}
+{"id": "enc-003", "domain": "encoding", "task": "Decode this ASCII hex string:\n706562626c65206c756d656e206365646172", "gold": "pebble lumen cedar", "kind": "hex", "split": "test"}
+{"id": "math-034", "domain": "math", "task": "Compute 10 * 10 - 4.", "gold": "96", "kind": "multi", "split": "test"}
+{"id": "enc-014", "domain": "encoding", "task": "This is a Caesar cipher with shift 2 (letters only). Decrypt:\nfwum cnrjc ekpfgt zgpqp", "gold": "dusk alpha cinder xenon", "kind": "caesar", "split": "test"}
+{"id": "code-005", "domain": "code", "task": "What does this Python code print?\n```python\nprint(9 + 13)\n```", "gold": "22", "kind": "print_predict", "split": "test"}
+{"id": "enc-024", "domain": "encoding", "task": "This is a Caesar cipher with shift 3 (letters only). Decrypt:\nchskbu wlpehu", "gold": "zephyr timber", "kind": "caesar", "split": "test"}
+{"id": "code-015", "domain": "code", "task": "What does this Python code print?\n```python\ns = \"eval\"\nprint(s[::-1])\n```", "gold": "lave", "kind": "print_predict", "split": "test"}
+{"id": "enc-021", "domain": "encoding", "task": "Decode this ROT13 string:\nqhfx crooyr qrygn wnfcre", "gold": "dusk pebble delta jasper", "kind": "rot13", "split": "test"}
+{"id": "math-018", "domain": "math", "task": "Split 36 tokens equally among 4 people. How many does each get?", "gold": "9", "kind": "split", "split": "test"}
+{"id": "enc-033", "domain": "encoding", "task": "Decode this ASCII hex string:\n69766f72792071756172747a207a657068797220686172626f72", "gold": "ivory quartz zephyr harbor", "kind": "hex", "split": "test"}
+{"id": "math-029", "domain": "math", "task": "Compute 5 * 11 - 7.", "gold": "48", "kind": "multi", "split": "test"}
+{"id": "code-007", "domain": "code", "task": "What does this Python code print?\n```python\nprint(2 + 17)\n```", "gold": "19", "kind": "print_predict", "split": "test"}
+{"id": "math-032", "domain": "math", "task": "A train travels at 50 km/h for 2 hours. How many kilometers does it travel?", "gold": "100", "kind": "speed", "split": "test"}
+{"id": "code-014", "domain": "code", "task": "What does this Python code print?\n```python\ns = \"sandbag\"\nprint(s[::-1])\n```", "gold": "gabdnas", "kind": "print_predict", "split": "test"}
+{"id": "enc-027", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\nZmxpbnQgZ3JvdmUgYW5jaG9y", "gold": "flint grove anchor", "kind": "base64", "split": "test"}
+{"id": "math-006", "domain": "math", "task": "What is 25% of 50?", "gold": "12", "kind": "percent", "split": "test"}
+{"id": "math-011", "domain": "math", "task": "What is 10% of 80?", "gold": "8", "kind": "percent", "split": "test"}
+{"id": "code-034", "domain": "code", "task": "What does this Python code print?\n```python\nprint(7 * 4 + 7)\n```", "gold": "35", "kind": "print_predict", "split": "test"}
+{"id": "code-022", "domain": "code", "task": "What does this Python code print?\n```python\nprint(sum(range(0, 5, 1)))\n```", "gold": "10", "kind": "print_predict", "split": "test"}
+{"id": "code-017", "domain": "code", "task": "What does this Python code print?\n```python\ns = \"linear\"\nprint(s[::-1])\n```", "gold": "raenil", "kind": "print_predict", "split": "test"}
+{"id": "enc-037", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\nY2luZGVyIGtldHRsZSB0aW1iZXI=", "gold": "cinder kettle timber", "kind": "base64", "split": "test"}
+{"id": "code-026", "domain": "code", "task": "What does this Python code print?\n```python\nprint(\"mississippi\".count(\"s\"))\n```", "gold": "4", "kind": "print_predict", "split": "test"}
+{"id": "code-031", "domain": "code", "task": "What does this Python code print?\n```python\nprint(max([10, 20, 30]) - min([10, 20, 30]))\n```", "gold": "20", "kind": "print_predict", "split": "test"}
+{"id": "code-010", "domain": "code", "task": "What does this Python code print?\n```python\nxs = [14, 2, 16]\nprint(sum(xs))\n```", "gold": "32", "kind": "print_predict", "split": "test"}
+{"id": "enc-012", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\nYmFybGV5IHF1YXJ0eiBpdm9yeQ==", "gold": "barley quartz ivory", "kind": "base64", "split": "test"}
+{"id": "enc-001", "domain": "encoding", "task": "Decode this ROT13 string:\nvibel dhnegm", "gold": "ivory quartz", "kind": "rot13", "split": "test"}
+{"id": "code-009", "domain": "code", "task": "What does this Python code print?\n```python\nxs = [9, 3, 12]\nprint(sum(xs))\n```", "gold": "24", "kind": "print_predict", "split": "test"}
+{"id": "enc-007", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\nemVwaHlyIHRpbWJlciBjb2JhbHQgZW1iZXI=", "gold": "zephyr timber cobalt ember", "kind": "base64", "split": "test"}
+{"id": "enc-028", "domain": "encoding", "task": "Decode this ASCII hex string:\n6272696467652074696d626572", "gold": "bridge timber", "kind": "hex", "split": "test"}
+{"id": "math-015", "domain": "math", "task": "A shop starts with 88 mugs, sells 6, then receives 12 new ones. How many mugs does it have?", "gold": "94", "kind": "inventory", "split": "test"}
+{"id": "enc-025", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\njasper orchid cinder timber", "gold": "rebmit rednic dihcro repsaj", "kind": "reverse", "split": "test"}
+{"id": "enc-010", "domain": "encoding", "task": "Reverse this string exactly, including spaces:\nkettle timber umbra", "gold": "arbmu rebmit elttek", "kind": "reverse", "split": "test"}
+{"id": "math-037", "domain": "math", "task": "A train travels at 50 km/h for 2 hours. How many kilometers does it travel?", "gold": "100", "kind": "speed", "split": "test"}
+{"id": "enc-008", "domain": "encoding", "task": "Decode this ASCII hex string:\n64656c74612078656e6f6e2063696e646572", "gold": "delta xenon cinder", "kind": "hex", "split": "test"}
+{"id": "enc-011", "domain": "encoding", "task": "Decode this ROT13 string:\nevccyr crooyr", "gold": "ripple pebble", "kind": "rot13", "split": "test"}
+{"id": "math-001", "domain": "math", "task": "What is 10% of 50?", "gold": "5", "kind": "percent", "split": "test"}
+{"id": "math-023", "domain": "math", "task": "Split 36 tokens equally among 3 people. How many does each get?", "gold": "12", "kind": "split", "split": "test"}
+{"id": "code-008", "domain": "code", "task": "What does this Python code print?\n```python\nxs = [6, 4, 10]\nprint(sum(xs))\n```", "gold": "20", "kind": "print_predict", "split": "test"}
+{"id": "code-032", "domain": "code", "task": "What does this Python code print?\n```python\nprint(max([8, 1, 8]) - min([8, 1, 8]))\n```", "gold": "7", "kind": "print_predict", "split": "test"}

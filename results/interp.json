@@ -1,0 +1,114 @@
+{
+  "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+  "n_items": 120,
+  "n_layers": 28,
+  "probe_auc_by_layer": [
+    0.5,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "best_probe_layer": 1,
+  "decoder_steer_layer": 0,
+  "steering": [
+    {
+      "alpha": -2.0,
+      "induce_on_neutral": 0.375,
+      "abolish_on_eval": 0.40625,
+      "random_on_neutral": 0.40625
+    },
+    {
+      "alpha": -1.0,
+      "induce_on_neutral": 0.375,
+      "abolish_on_eval": 0.40625,
+      "random_on_neutral": 0.40625
+    },
+    {
+      "alpha": -0.5,
+      "induce_on_neutral": 0.375,
+      "abolish_on_eval": 0.40625,
+      "random_on_neutral": 0.375
+    },
+    {
+      "alpha": 0.0,
+      "induce_on_neutral": 0.375,
+      "abolish_on_eval": 0.40625,
+      "random_on_neutral": 0.375
+    },
+    {
+      "alpha": 0.5,
+      "induce_on_neutral": 0.40625,
+      "abolish_on_eval": 0.40625,
+      "random_on_neutral": 0.375
+    },
+    {
+      "alpha": 1.0,
+      "induce_on_neutral": 0.40625,
+      "abolish_on_eval": 0.4375,
+      "random_on_neutral": 0.375
+    },
+    {
+      "alpha": 2.0,
+      "induce_on_neutral": 0.40625,
+      "abolish_on_eval": 0.4375,
+      "random_on_neutral": 0.40625
+    }
+  ],
+  "patching": [
+    {
+      "layer": 0,
+      "acc_neutral_with_eval_patch": 0.375
+    },
+    {
+      "layer": 4,
+      "acc_neutral_with_eval_patch": 0.375
+    },
+    {
+      "layer": 8,
+      "acc_neutral_with_eval_patch": 0.375
+    },
+    {
+      "layer": 12,
+      "acc_neutral_with_eval_patch": 0.375
+    },
+    {
+      "layer": 16,
+      "acc_neutral_with_eval_patch": 0.375
+    },
+    {
+      "layer": 20,
+      "acc_neutral_with_eval_patch": 0.375
+    },
+    {
+      "layer": 24,
+      "acc_neutral_with_eval_patch": 0.375
+    }
+  ],
+  "mean_probe_auc": 0.9827586206896551,
+  "max_probe_auc": 1.0
+}
