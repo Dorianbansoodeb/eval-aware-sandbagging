@@ -258,5 +258,5 @@
   },
   "n_rows": 600,
   "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
-  "rescored_flips": 11
+  "rescored_flips": 0
 }

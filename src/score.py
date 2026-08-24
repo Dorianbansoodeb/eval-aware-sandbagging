@@ -51,7 +51,7 @@ def _numeric_value(s: str) -> float | None:
     'Each person gets 16 tokens' both match. We do not scan the full chain-of-thought
     here — callers pass the extracted Final-answer line (or last line).
     """
-    s = _clean(s)
+    s = _clean(s).replace(",", "")
     direct = _as_float(s)
     if direct is not None:
         return direct

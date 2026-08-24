@@ -37,6 +37,12 @@ python src/run.py --stage all
 
 Or `bash scripts/run_all.sh`. Stages: `data`, `eval`, `elicit`, `suffix`, `interp`, `figures`.
 
+Check that every committed generation is graded correctly (no GPU, no model):
+
+```bash
+PYTHONPATH=. python tests/run_audit.py
+```
+
 Config lives in [`configs/default.yaml`](configs/default.yaml). Point `model_id` at a 7B instruct model to rerun the same tests at a more interesting scale.
 
 ## What is in the repo
@@ -51,6 +57,7 @@ src/rescore.py       # re-grade saved generations without a model
 src/elicit.py        # few-shot, prefill, persona
 src/suffix_search.py # random suffixes minus eval vocabulary
 src/interp.py        # probes, difference-in-means, steer, patch
+tests/run_audit.py   # lock 600 labels + golds (PYTHONPATH=. python tests/run_audit.py)
 results/             # committed tables, generations, figures
 ```
 
