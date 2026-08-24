@@ -31,6 +31,7 @@ def _clean(s: str) -> str:
     s = s.strip().strip("`'\"")
     s = s.replace("```", "").strip()
     s = s.replace("$", "")
+    s = re.sub(r"\*+", "", s)
     if s.endswith("."):
         s = s[:-1]
     return " ".join(s.split())
@@ -38,13 +39,18 @@ def _clean(s: str) -> str:
 
 def _as_float(s: str) -> float | None:
     try:
-        return float(s)
+        return float(s.replace(",", ""))
     except ValueError:
         return None
 
 
 def _numeric_value(s: str) -> float | None:
-    """Parse a gold or pred that is a number, optionally with a unit."""
+    """Parse a gold or pred that is a number, optionally with a unit or extra words.
+
+    For numeric golds we take the *last* number so '25% of 120 is 30' and
+    'Each person gets 16 tokens' both match. We do not scan the full chain-of-thought
+    here — callers pass the extracted Final-answer line (or last line).
+    """
     s = _clean(s)
     direct = _as_float(s)
     if direct is not None:
@@ -53,6 +59,9 @@ def _numeric_value(s: str) -> float | None:
         m = NUM_RE.search(s)
         if m:
             return _as_float(m.group(0))
+    nums = NUM_RE.findall(s)
+    if nums:
+        return _as_float(nums[-1])
     return None
 
 

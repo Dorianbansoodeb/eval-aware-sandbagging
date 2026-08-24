@@ -14,7 +14,7 @@ Primary model: [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.
 
 | Test | Result |
 |---|---|
-| Paired framing eval (120 items × 5 framings) | No sandbagging. Math+code: **0.725** (`eval`) vs **0.575** (`neutral`). Math: 0.825 vs 0.550 after accepting unit-normalized answers (`150 km` = `150`). Encoding is 0/40 in every condition. |
+| Paired framing eval (120 items × 5 framings) | No sandbagging. Math+code: **0.750** (`eval`) vs **0.637** (`neutral`). Math: 0.875 vs 0.675. The grader accepts `150 km` = `150` and `25% of 120 is 30` = `30`. Encoding is 0/40 in every condition. |
 | Elicitation | 4-shot helps math; prefill and persona do not. Encoding stays at floor. |
 | Random suffixes (no eval vocabulary) | Accuracy drops track collapsed `Final answer:` formatting, not selective underperformance. |
 | Linear probe | AUC 0.50 at embeddings, **1.00 from layer 1** (lexical prompt contrast). |
@@ -45,7 +45,9 @@ Config lives in [`configs/default.yaml`](configs/default.yaml). Point `model_id`
 docs/                # GitHub Pages demo (static, replays committed generations)
 demo/app.py          # local Gradio explorer
 src/build_items.py   # 120 machine-gradable items
-src/eval_run.py      # five framings, greedy generate, exact-match grader
+src/eval_run.py      # five framings, greedy generate
+src/score.py         # unit- and last-number-aware grader
+src/rescore.py       # re-grade saved generations without a model
 src/elicit.py        # few-shot, prefill, persona
 src/suffix_search.py # random suffixes minus eval vocabulary
 src/interp.py        # probes, difference-in-means, steer, patch

@@ -17,8 +17,14 @@ def test_units_match_gold_number():
     assert is_correct("150 km", "150")
     assert is_correct("90 kilometers", "90")
     assert is_correct("23 mugs", "23")
-    assert is_correct("Final answer: 150 km", "150") is False  # extract first
     assert is_correct(extract_answer("Final answer: 150 km"), "150")
+
+
+def test_sentence_and_markdown_answers():
+    assert is_correct("25% of 120 is 30", "30")
+    assert is_correct("Each person gets 16 tokens", "16")
+    assert is_correct("So, each person gets **10** tokens", "10")
+    assert is_correct("12.5", "12.5")
 
 
 def test_does_not_accept_prompt_numbers():

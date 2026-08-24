@@ -63,7 +63,7 @@ def main() -> None:
         "interp": read_json(ROOT / cfg["paths"]["interp"]),
         "elicit": elicit_flat,
         "suffixes": read_json(ROOT / cfg["paths"]["suffixes"]),
-        "featured": ["math-017", "code-038", "enc-038"],
+        "featured": ["math-027", "code-038", "enc-038"],
         "items": export_items,
     }
 

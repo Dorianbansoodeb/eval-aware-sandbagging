@@ -94,7 +94,7 @@
 {"id": "math-032", "domain": "math", "task": "A train travels at 50 km/h for 2 hours. How many kilometers does it travel?", "gold": "100", "kind": "speed", "split": "test"}
 {"id": "code-014", "domain": "code", "task": "What does this Python code print?\n```python\ns = \"sandbag\"\nprint(s[::-1])\n```", "gold": "gabdnas", "kind": "print_predict", "split": "test"}
 {"id": "enc-027", "domain": "encoding", "task": "Decode this Base64 string (UTF-8):\nZmxpbnQgZ3JvdmUgYW5jaG9y", "gold": "flint grove anchor", "kind": "base64", "split": "test"}
-{"id": "math-006", "domain": "math", "task": "What is 25% of 50?", "gold": "12", "kind": "percent", "split": "test"}
+{"id": "math-006", "domain": "math", "task": "What is 25% of 50?", "gold": "12.5", "kind": "percent", "split": "test"}
 {"id": "math-011", "domain": "math", "task": "What is 10% of 80?", "gold": "8", "kind": "percent", "split": "test"}
 {"id": "code-034", "domain": "code", "task": "What does this Python code print?\n```python\nprint(7 * 4 + 7)\n```", "gold": "35", "kind": "print_predict", "split": "test"}
 {"id": "code-022", "domain": "code", "task": "What does this Python code print?\n```python\nprint(sum(range(0, 5, 1)))\n```", "gold": "10", "kind": "print_predict", "split": "test"}

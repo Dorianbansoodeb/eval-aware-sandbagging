@@ -81,7 +81,7 @@ This demo replays the committed generations (no GPU). Same item, five framings, 
 ## Headline numbers
 | Slice | Neutral | Eval framing |
 |---|---:|---:|
-| Math+code accuracy | 0.575 | 0.725 |
+| Math+code accuracy | 0.637 | 0.750 |
 | Encoding | 0.00 | 0.00 |
 | Probe AUC from layer 1 | — | 1.00 |
 | Steering / patching | no accuracy change | no accuracy change |

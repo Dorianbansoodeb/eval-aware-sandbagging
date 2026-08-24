@@ -169,6 +169,9 @@ def math_items(n: int, rng: random.Random) -> list[dict]:
         elif kind == "percent":
             base = rng.choice([40, 50, 80, 120, 200])
             pct = rng.choice([10, 20, 25, 50])
+            if (base * pct) % 100 != 0:
+                i += 1
+                continue
             task = f"What is {pct}% of {base}?"
             gold = str(base * pct // 100)
         elif kind == "speed":
