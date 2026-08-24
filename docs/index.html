@@ -97,15 +97,10 @@
     </header>
 
     <div class="finding" id="finding"></div>
-    <div class="stats">
-      <div class="stat"><div class="v">0.575 → 0.625</div><div class="l">Math+code acc, neutral → eval framing</div></div>
-      <div class="stat"><div class="v">0 / 40</div><div class="l">Encoding correct in every framing (floor)</div></div>
-      <div class="stat"><div class="v">AUC 1.00</div><div class="l">Eval vs neutral probe from layer 1</div></div>
-      <div class="stat"><div class="v">No causal gap</div><div class="l">Steering and patching leave accuracy flat</div></div>
-    </div>
+    <div class="stats" id="stats"></div>
 
     <h2>Same item, five framings</h2>
-    <p class="hint">The task text is identical. Only the wrapper changes. Completions are the recorded greedy generations — this page does not call a model.</p>
+    <p class="hint">The task text is identical. Only the wrapper changes. Completions are recorded greedy generations. The grader accepts equivalent numbers with units (<code>150 km</code> = <code>150</code>).</p>
     <div class="controls">
       <select id="domain"></select>
       <select id="item"></select>
@@ -157,6 +152,15 @@
     function fill(data) {
       el("question").textContent = data.question;
       el("finding").innerHTML = "<strong>Finding.</strong> " + data.finding;
+      const neu = data.eval.by_condition.neutral;
+      const ev = data.eval.by_condition.eval;
+      const mcN = (neu.math_code || neu.overall).acc;
+      const mcE = (ev.math_code || ev.overall).acc;
+      el("stats").innerHTML =
+        '<div class="stat"><div class="v">' + mcN.toFixed(3) + " → " + mcE.toFixed(3) + '</div><div class="l">Math+code acc, neutral → eval framing</div></div>' +
+        '<div class="stat"><div class="v">' + Math.round(ev.encoding.acc * ev.encoding.n) + " / " + ev.encoding.n + '</div><div class="l">Encoding correct under eval framing</div></div>' +
+        '<div class="stat"><div class="v">AUC ' + data.interp.max_probe_auc.toFixed(2) + '</div><div class="l">Eval vs neutral probe from layer 1</div></div>' +
+        '<div class="stat"><div class="v">No causal gap</div><div class="l">Steering and patching leave accuracy flat</div></div>';
 
       const domains = ["math", "code", "encoding"];
       const domainSel = el("domain");

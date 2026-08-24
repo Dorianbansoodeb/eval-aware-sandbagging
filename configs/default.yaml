@@ -1,7 +1,7 @@
 seed: 0
 model_id: Qwen/Qwen2.5-1.5B-Instruct
 replication_model_id: HuggingFaceTB/SmolLM2-360M-Instruct
-max_new_tokens: 64
+max_new_tokens: 128
 batch_size: 8
 dtype: float16
 device: auto  # mps | cuda | cpu | auto

@@ -14,8 +14,10 @@ from src.build_items import main as build_items
 from src.config import ROOT
 from src.elicit import run_elicit
 from src.eval_run import run_eval
+from src.export_demo import main as export_demo
 from src.figures import main as make_figures
 from src.interp import run_interp
+from src.rescore import rescore
 from src.suffix_search import run_suffix_search
 
 
@@ -37,12 +39,17 @@ def main():
     p.add_argument(
         "--stage",
         default="all",
-        choices=["data", "eval", "elicit", "suffix", "interp", "figures", "all"],
+        choices=["data", "eval", "elicit", "suffix", "interp", "figures", "rescore", "all"],
     )
     p.add_argument("--config", default=None)
     args = p.parse_args()
     ROOT.joinpath("results").mkdir(exist_ok=True)
 
+    if args.stage == "rescore":
+        print(rescore())
+        make_figures()
+        export_demo()
+        return
     if args.stage in ("data", "all"):
         build_items()
     if args.stage in ("eval", "all"):
@@ -63,6 +70,7 @@ def main():
         _cleanup()
     if args.stage in ("figures", "all"):
         make_figures()
+        export_demo()
 
 
 if __name__ == "__main__":

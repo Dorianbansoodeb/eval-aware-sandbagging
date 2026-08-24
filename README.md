@@ -14,7 +14,7 @@ Primary model: [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.
 
 | Test | Result |
 |---|---|
-| Paired framing eval (120 items × 5 framings) | Eval-like wrappers match or beat `neutral`. Math+code: 0.625 (`eval`) vs 0.575 (`neutral`). Encoding is 0/40 in every condition. |
+| Paired framing eval (120 items × 5 framings) | No sandbagging. Math+code: **0.725** (`eval`) vs **0.575** (`neutral`). Math: 0.825 vs 0.550 after accepting unit-normalized answers (`150 km` = `150`). Encoding is 0/40 in every condition. |
 | Elicitation | 4-shot helps math; prefill and persona do not. Encoding stays at floor. |
 | Random suffixes (no eval vocabulary) | Accuracy drops track collapsed `Final answer:` formatting, not selective underperformance. |
 | Linear probe | AUC 0.50 at embeddings, **1.00 from layer 1** (lexical prompt contrast). |

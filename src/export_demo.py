@@ -53,9 +53,10 @@ def main() -> None:
             "evaluation, and is that gap causally mediated by a single residual-stream direction?"
         ),
         "finding": (
-            "At 1.5B, no. Eval-like framings do not reduce accuracy. A linear probe "
-            "reads the eval/neutral contrast perfectly from layer 1, but steering and "
-            "patching do not change task performance."
+            "At 1.5B, no sandbagging: eval-like framings do not reduce accuracy. "
+            "The grader treats 150 km as 150. A linear probe reads the eval/neutral "
+            "contrast perfectly from layer 1, but steering and patching do not change "
+            "task performance."
         ),
         "framings": FRAMINGS,
         "eval": read_json(ROOT / cfg["paths"]["eval_summary"]),

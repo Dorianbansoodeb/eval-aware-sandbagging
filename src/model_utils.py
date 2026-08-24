@@ -89,6 +89,7 @@ def generate_batch(
         **encoded,
         max_new_tokens=max_new_tokens,
         do_sample=False,
+        eos_token_id=tok.eos_token_id,
         pad_token_id=tok.pad_token_id,
     )
     completions = []
