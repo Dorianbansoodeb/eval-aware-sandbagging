@@ -1,142 +1,179 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Eval-aware sandbagging — interactive demo</title>
+  <title>Eval-Aware Sandbagging — AI Safety Eval</title>
   <meta name="description" content="Interactive demo: same problem, five evaluation framings, Qwen2.5-1.5B-Instruct generations, probes, and steering." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"] },
+          colors: { ink: { 950: "#050505", 900: "#0a0a0a", 850: "#121212" } },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #f4f1ea;
-      --paper: #fffdf8;
-      --ink: #1c1914;
-      --muted: #5c564c;
-      --line: #d9d2c5;
-      --accent: #1f4e79;
-      --ok: #215c3a;
-      --bad: #8b2e2e;
-      --code: #2a261f;
+    html { color-scheme: dark; }
+    .hero {
+      background-image:
+        linear-gradient(90deg, rgba(5,5,5,0.92) 0%, rgba(5,5,5,0.55) 48%, rgba(5,5,5,0.18) 100%),
+        url("hero.jpg");
+      background-size: cover;
+      background-position: center 30%;
     }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
-    body {
-      font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
-      line-height: 1.5;
+    .nav-link.active { color: #fff; }
+    pre.comp {
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 10rem;
+      overflow: auto;
     }
-    h1, h2, h3 {
-      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-    a { color: var(--accent); }
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
-    header { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline; margin-bottom: 28px; }
-    .kicker { text-transform: uppercase; letter-spacing: 0.12em; font-size: 12px; color: var(--muted); }
-    h1 { font-size: 34px; line-height: 1.15; margin: 6px 0 8px; }
-    .lede { max-width: 62ch; color: var(--muted); font-size: 17px; }
-    .links { font-size: 14px; display: flex; gap: 14px; flex-wrap: wrap; }
-    .finding {
-      background: var(--paper);
-      border: 1px solid var(--line);
-      padding: 16px 18px;
-      margin: 24px 0;
-    }
-    .finding strong { color: var(--accent); }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0 32px; }
-    .stat { background: var(--paper); border: 1px solid var(--line); padding: 14px; }
-    .stat .v { font-size: 22px; font-family: Georgia, serif; }
-    .stat .l { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    h2 { font-size: 22px; margin: 36px 0 10px; }
-    .hint { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
-    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
-    select {
-      font: inherit; padding: 8px 10px; border: 1px solid var(--line);
-      background: var(--paper); min-width: 220px; max-width: 100%;
-    }
-    .task {
-      background: var(--paper); border: 1px solid var(--line); padding: 14px 16px; margin-bottom: 12px;
-      white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px;
-    }
-    .gold { font-family: inherit; font-size: 14px; margin-bottom: 8px; color: var(--muted); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
-    .card { background: var(--paper); border: 1px solid var(--line); padding: 12px 14px; min-height: 160px; }
-    .card h3 { margin: 0 0 6px; font-size: 16px; }
-    .pill { display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 7px; border: 1px solid var(--line); }
-    .pill.ok { color: var(--ok); border-color: #b7d4c2; }
-    .pill.bad { color: var(--bad); border-color: #e3c0c0; }
-    .pred { font-size: 13px; margin: 8px 0; color: var(--muted); }
-    pre {
-      white-space: pre-wrap; word-break: break-word; background: #f7f4ee;
-      padding: 8px; font-size: 12px; margin: 0; max-height: 180px; overflow: auto;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--code);
-    }
-    .charts { display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; }
-    .panel { background: var(--paper); border: 1px solid var(--line); padding: 14px; }
-    .bar-row { display: grid; grid-template-columns: 110px 1fr 52px; gap: 8px; align-items: center; margin: 7px 0; font-size: 13px; }
-    .bar-track { background: #ece6db; height: 10px; }
-    .bar-fill { background: var(--accent); height: 10px; }
-    .line { height: 160px; }
-    footer { margin-top: 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
-    @media (max-width: 800px) {
-      .stats, .charts { grid-template-columns: 1fr; }
-      h1 { font-size: 26px; }
-    }
+    .lesson:hover { background: rgba(255,255,255,0.03); }
   </style>
 </head>
-<body>
-  <div class="wrap">
-    <header>
-      <div>
-        <div class="kicker">Interactive demo · Qwen2.5-1.5B-Instruct</div>
-        <h1>Evaluation-aware sandbagging</h1>
-        <p class="lede" id="question"></p>
+<body class="h-full bg-ink-950 text-zinc-300 font-sans antialiased">
+  <div class="min-h-full lg:flex">
+    <aside class="hidden lg:flex lg:w-72 lg:shrink-0 lg:flex-col lg:border-r lg:border-white/10 bg-ink-850">
+      <div class="flex items-center gap-2.5 px-5 py-5">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full border border-white/25">
+          <svg class="h-3 w-3 text-white" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><path d="M3 1.8v8.4L10.2 6 3 1.8z"/></svg>
+        </span>
+        <span class="text-sm font-semibold tracking-tight text-white">Sandbag</span>
       </div>
-      <div class="links">
-        <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">GitHub</a>
-      </div>
-    </header>
+      <nav id="sidebar-nav" class="flex-1 overflow-y-auto px-4 pb-10 text-[13px] leading-6"></nav>
+    </aside>
 
-    <div class="finding" id="finding"></div>
-    <div class="stats" id="stats"></div>
+    <div class="flex min-w-0 flex-1 flex-col">
+      <header class="flex items-center justify-between gap-4 px-4 py-3.5 sm:px-8">
+        <div class="flex items-center gap-3 min-w-0">
+          <button type="button" id="menu-btn" class="lg:hidden rounded-md p-1 text-zinc-400 hover:text-white" aria-label="Open menu">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <p class="truncate text-sm text-zinc-500"><span class="text-zinc-200">Sandbag</span> <span class="mx-1 text-zinc-600">/</span> <span id="crumb">Overview</span></p>
+        </div>
+        <nav class="hidden items-center gap-6 text-sm text-zinc-300 sm:flex">
+          <button type="button" data-go="overview" class="hover:text-white">Course</button>
+          <button type="button" data-go="explorer" data-domain="math" class="hover:text-white">Explorer</button>
+          <a class="hover:text-white" href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging/blob/main/README.md">Resources</a>
+          <a class="hover:text-white" href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">GitHub</a>
+        </nav>
+      </header>
 
-    <h2>Same item, five framings</h2>
-    <p class="hint">The task text is identical. Only the wrapper changes. Completions are recorded greedy generations. The grader accepts equivalent numbers with units (<code>150 km</code> = <code>150</code>).</p>
-    <div class="controls">
-      <select id="domain"></select>
-      <select id="item"></select>
+      <main class="flex-1">
+        <section id="view-overview" class="view">
+          <div class="hero relative min-h-[22rem] px-4 py-16 sm:min-h-[26rem] sm:px-10 sm:py-20">
+            <div class="relative max-w-xl">
+              <div class="mb-5 flex items-center gap-2.5">
+                <span class="flex h-8 w-8 items-center justify-center rounded-full border border-white/40">
+                  <svg class="h-3.5 w-3.5 text-white" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.8v8.4L10.2 6 3 1.8z"/></svg>
+                </span>
+                <span class="text-lg font-semibold tracking-tight text-white">Sandbag</span>
+              </div>
+              <p id="question" class="text-[15px] leading-7 text-zinc-300 sm:text-base"></p>
+              <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-zinc-400">
+                <span class="inline-flex items-center gap-1.5">
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h10M4 18h7"/></svg>
+                  3 domains
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.75v10.5M8.25 9.75h7.5M8.25 14.25h7.5"/></svg>
+                  120 items
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+                  600 generations
+                </span>
+              </div>
+              <button type="button" data-go="explorer" data-domain="math" data-item="math-027" class="mt-8 inline-flex items-center gap-2 rounded-full border border-white/70 px-4 py-2 text-sm font-medium text-white hover:bg-white/10">
+                <svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.8v8.4L10.2 6 3 1.8z"/></svg>
+                Start the course
+              </button>
+            </div>
+          </div>
+
+          <div class="px-4 py-12 sm:px-10">
+            <p class="text-xs font-medium uppercase tracking-wider text-zinc-500">Part 1</p>
+            <h2 class="mt-2 text-2xl font-semibold tracking-tight text-white">Orientation: Understanding Where You Are</h2>
+            <p id="finding" class="mt-3 max-w-2xl text-sm leading-6 text-zinc-400"></p>
+            <div id="stats" class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"></div>
+            <ul id="overview-lessons" class="mt-10 divide-y divide-white/10 border-y border-white/10"></ul>
+          </div>
+        </section>
+
+        <section id="view-explorer" class="view hidden px-4 py-10 sm:px-10">
+          <p class="text-xs font-medium uppercase tracking-wider text-zinc-500">Part 2</p>
+          <h2 id="explorer-title" class="mt-2 text-2xl font-semibold tracking-tight text-white">Math items</h2>
+          <p id="explorer-intro" class="mt-3 max-w-2xl text-sm leading-6 text-zinc-400"></p>
+          <div id="item-list" class="mt-8 divide-y divide-white/10 border-y border-white/10"></div>
+          <div id="item-detail" class="mt-10 hidden">
+            <button type="button" id="back-to-list" class="text-sm text-zinc-400 hover:text-white">← All items in this domain</button>
+            <p id="gold" class="mt-6 text-sm text-zinc-400"></p>
+            <pre id="task" class="mt-3 overflow-x-auto rounded-xl border border-white/10 bg-black/40 p-4 font-mono text-xs text-zinc-300"></pre>
+            <h3 class="mt-10 text-sm font-semibold uppercase tracking-wider text-zinc-500">Five framings</h3>
+            <div id="cards" class="mt-4 divide-y divide-white/10 border-y border-white/10"></div>
+          </div>
+        </section>
+
+        <section id="view-results" class="view hidden px-4 py-10 sm:px-10">
+          <p class="text-xs font-medium uppercase tracking-wider text-zinc-500">Part 3</p>
+          <h2 class="mt-2 text-2xl font-semibold tracking-tight text-white">Paired eval</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">Accuracy by framing on math and code (80 items). Encoding is 0/40 in every condition and is omitted here so the bars match the headline result.</p>
+          <div id="acc-panel" class="mt-8 max-w-xl space-y-3"></div>
+        </section>
+
+        <section id="view-internals" class="view hidden px-4 py-10 sm:px-10">
+          <p class="text-xs font-medium uppercase tracking-wider text-zinc-500">Part 3</p>
+          <h2 class="mt-2 text-2xl font-semibold tracking-tight text-white">Probes &amp; steering</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">Embeddings cannot separate the prompts. From layer 1 the contrast is perfect — the residual can see the word “benchmark.” Steering does not move accuracy.</p>
+          <div class="mt-10 grid gap-10 lg:grid-cols-2">
+            <div>
+              <h3 class="text-sm font-medium text-white">Linear probe AUC by layer</h3>
+              <svg id="probe" class="mt-4 h-40 w-full" viewBox="0 0 320 160" preserveAspectRatio="none"></svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-medium text-white">Activation steering (add v on neutral)</h3>
+              <div id="steer" class="mt-4 space-y-3"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="view-redteam" class="view hidden px-4 py-10 sm:px-10">
+          <p class="text-xs font-medium uppercase tracking-wider text-zinc-500">Part 3</p>
+          <h2 class="mt-2 text-2xl font-semibold tracking-tight text-white">Red team</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">Few-shot helps math; prefills and a try-hard persona do not. Random suffixes that drop accuracy mostly destroy the Final answer tag (held-out well-formedness 0.20) — format collapse, not hidden skill.</p>
+          <div id="elicit-panel" class="mt-8 max-w-xl space-y-3"></div>
+        </section>
+      </main>
+
+      <footer class="border-t border-white/10 px-4 py-6 text-xs text-zinc-500 sm:px-10">
+        MIT license. Recorded generations from
+        <a class="text-zinc-300 hover:text-white" href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">Dorianbansoodeb/eval-aware-sandbagging</a>.
+        Layout inspired by the Compass course template; not affiliated with Tailwind.
+        Hero photograph via Unsplash.
+      </footer>
     </div>
-    <div class="gold" id="gold"></div>
-    <div class="task" id="task"></div>
-    <div class="grid" id="cards"></div>
-
-    <h2>Paired eval</h2>
-    <p class="hint">Accuracy by framing and domain. Eval-like wrappers do not underperform relative to a helpful baseline.</p>
-    <div class="panel" id="acc-panel"></div>
-
-    <h2>Readable is not causal</h2>
-    <div class="charts">
-      <div class="panel">
-        <h3>Linear probe AUC by layer</h3>
-        <p class="hint">Embeddings cannot separate the prompts (shared answer instruction). From layer 1 the contrast is perfect — the residual can see the word “benchmark.”</p>
-        <svg id="probe" class="line" viewBox="0 0 320 160" width="100%" preserveAspectRatio="none"></svg>
-      </div>
-      <div class="panel">
-        <h3>Activation steering</h3>
-        <p class="hint">Adding or subtracting the eval−neutral direction at decoder layer 0 does not move accuracy outside noise. Patching is 0.375 at every layer.</p>
-        <div id="steer"></div>
-      </div>
-    </div>
-
-    <h2>Red team, briefly</h2>
-    <p class="hint">Few-shot helps math; prefills and a try-hard persona do not. Random suffixes that drop accuracy mostly destroy the <code>Final answer:</code> tag (held-out well-formedness 0.20) — format collapse, not hidden skill.</p>
-    <div class="panel" id="elicit-panel"></div>
-
-    <footer>
-      MIT license. Recorded generations from
-      <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">Dorianbansoodeb/eval-aware-sandbagging</a>.
-      To regenerate: <code>python src/run.py --stage all</code>.
-    </footer>
   </div>
+
+  <div id="drawer" class="fixed inset-0 z-40 hidden lg:hidden">
+    <div id="drawer-bg" class="absolute inset-0 bg-black/70"></div>
+    <div class="absolute inset-y-0 left-0 w-72 overflow-y-auto bg-ink-850 p-4 pt-5 shadow-2xl">
+      <p class="mb-4 flex items-center gap-2 text-sm font-semibold text-white">
+        <span class="flex h-7 w-7 items-center justify-center rounded-full border border-white/25">
+          <svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.8v8.4L10.2 6 3 1.8z"/></svg>
+        </span>
+        Sandbag
+      </p>
+      <div id="drawer-nav"></div>
+    </div>
+  </div>
+
   <script>
     const CONDS = ["neutral", "eval", "threat", "anti_eval", "oversight"];
     const LABELS = {
@@ -146,121 +183,268 @@
       anti_eval: "Not a test",
       oversight: "Safety oversight"
     };
+    const DOMAIN_COPY = {
+      math: {
+        title: "Math items",
+        intro: "Where the 1.5B model can score. Eval framing often helps because it elicits a tagged Final answer, not because the model hides skill."
+      },
+      code: {
+        title: "Code items",
+        intro: "Print-prediction tasks. Eval-like wrappers do not reduce accuracy versus a helpful baseline."
+      },
+      encoding: {
+        title: "Encoding items",
+        intro: "0/40 in every framing. The model cannot decode; all-red cards here are a capability floor, not sandbagging."
+      }
+    };
 
     function el(id) { return document.getElementById(id); }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+    function playIcon() {
+      return '<span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 text-zinc-300">' +
+        '<svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor"><path d="M3 1.8v8.4L10.2 6 3 1.8z"/></svg></span>';
+    }
+    function barRow(label, acc) {
+      return '<div class="grid grid-cols-[9rem_1fr_2.75rem] items-center gap-3 text-sm">' +
+        '<div class="text-zinc-400">' + escapeHtml(label) + '</div>' +
+        '<div class="h-1.5 rounded-full bg-white/10"><div class="h-1.5 rounded-full bg-white" style="width:' + (acc * 100) + '%"></div></div>' +
+        '<div class="text-right tabular-nums text-zinc-200">' + acc.toFixed(3) + '</div></div>';
+    }
+    function correctCount(it) {
+      return CONDS.reduce((n, c) => n + (it.runs && it.runs[c] && it.runs[c].correct ? 1 : 0), 0);
+    }
+    function lessonRow(opts) {
+      return '<button type="button" class="lesson flex w-full gap-4 py-5 text-left" ' + (opts.attrs || "") + ">" +
+        playIcon() +
+        '<span class="min-w-0 flex-1">' +
+        '<span class="flex flex-wrap items-baseline gap-x-2">' +
+        '<span class="text-sm font-medium text-white">' + escapeHtml(opts.title) + "</span>" +
+        (opts.meta ? '<span class="text-sm text-zinc-500">' + escapeHtml(opts.meta) + "</span>" : "") +
+        "</span>" +
+        (opts.desc ? '<span class="mt-1 block text-sm text-zinc-400">' + escapeHtml(opts.desc) + "</span>" : "") +
+        "</span></button>";
+    }
+
+    let DATA = null;
+    let currentDomain = "math";
+    let selectedId = null;
+
+    function navHTML() {
+      const sections = [
+        {
+          head: "Orientation: Understanding Where You Are",
+          items: [
+            { label: "Overview", go: "overview" },
+            { label: "Headline numbers", go: "overview" }
+          ]
+        },
+        {
+          head: "Direction: Choosing a Path",
+          items: [
+            { label: "Math items", go: "explorer", domain: "math" },
+            { label: "Code items", go: "explorer", domain: "code" },
+            { label: "Encoding items", go: "explorer", domain: "encoding" }
+          ]
+        },
+        {
+          head: "Navigation: Steering Through the Inevitable",
+          items: [
+            { label: "Paired eval", go: "results" },
+            { label: "Probes & steering", go: "internals" },
+            { label: "Red team", go: "redteam" }
+          ]
+        }
+      ];
+      return sections.map(sec => {
+        const links = sec.items.map(it => {
+          const active =
+            (it.go === "overview" && el("view-overview") && !el("view-overview").classList.contains("hidden") && it.label === "Overview") ||
+            (it.go === "explorer" && !el("view-explorer").classList.contains("hidden") && it.domain === currentDomain) ||
+            (it.go === "results" && !el("view-results").classList.contains("hidden")) ||
+            (it.go === "internals" && !el("view-internals").classList.contains("hidden")) ||
+            (it.go === "redteam" && !el("view-redteam").classList.contains("hidden"));
+          return '<button type="button" data-go="' + it.go + '"' +
+            (it.domain ? ' data-domain="' + it.domain + '"' : "") +
+            ' class="nav-link block w-full rounded-md px-1 py-0.5 text-left ' +
+            (active ? "active text-white" : "text-zinc-400 hover:text-white") + '">' +
+            escapeHtml(it.label) + "</button>";
+        }).join("");
+        return '<div class="mb-8"><p class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-white">' +
+          escapeHtml(sec.head) + "</p>" + links + "</div>";
+      }).join("");
+    }
+
+    function bindNav(root) {
+      root.querySelectorAll("[data-go]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const view = btn.getAttribute("data-go");
+          const domain = btn.getAttribute("data-domain");
+          const item = btn.getAttribute("data-item");
+          showView(view, domain, view === "explorer" ? (item || null) : undefined);
+        });
+      });
+    }
+
+    function refreshNav() {
+      el("sidebar-nav").innerHTML = navHTML();
+      bindNav(el("sidebar-nav"));
+      el("drawer-nav").innerHTML = navHTML();
+      bindNav(el("drawer-nav"));
+    }
+
+    function crumbFor(view) {
+      if (view === "explorer") return DOMAIN_COPY[currentDomain].title;
+      return { overview: "Overview", results: "Paired eval", internals: "Probes & steering", redteam: "Red team" }[view] || view;
+    }
+
+    function syncHash(view) {
+      if (view === "explorer") {
+        location.hash = selectedId ? ("explorer/" + currentDomain + "/" + selectedId) : ("explorer/" + currentDomain);
+      } else {
+        location.hash = view || "overview";
+      }
+    }
+
+    function applyHash() {
+      const parts = (location.hash || "#overview").replace(/^#/, "").split("/").filter(Boolean);
+      const view = parts[0] || "overview";
+      if (view === "explorer") {
+        showView("explorer", parts[1] || "math", parts[2] || null, true);
+      } else if (["overview", "results", "internals", "redteam"].includes(view)) {
+        showView(view, null, undefined, true);
+      }
+    }
+
+    function showView(view, domain, itemId, skipHash) {
+      document.querySelectorAll(".view").forEach(n => n.classList.add("hidden"));
+      const node = el("view-" + view);
+      if (node) node.classList.remove("hidden");
+      if (view === "explorer") {
+        if (domain) currentDomain = domain;
+        if (itemId !== undefined) selectedId = itemId;
+        else {
+          const it = DATA.items.find(x => x.id === selectedId);
+          if (!it || it.domain !== currentDomain) selectedId = null;
+        }
+        renderExplorer();
+      }
+      el("crumb").textContent = crumbFor(view);
+      refreshNav();
+      if (!skipHash) syncHash(view);
+      window.scrollTo(0, 0);
+      el("drawer").classList.add("hidden");
+    }
+
+    function renderExplorer() {
+      const copy = DOMAIN_COPY[currentDomain];
+      el("explorer-title").textContent = copy.title;
+      el("explorer-intro").textContent = copy.intro;
+      const items = DATA.items.filter(it => it.domain === currentDomain);
+      const list = el("item-list");
+      const detail = el("item-detail");
+      if (!selectedId) {
+        list.classList.remove("hidden");
+        detail.classList.add("hidden");
+        list.innerHTML = items.map(it => lessonRow({
+          title: it.id,
+          meta: correctCount(it) + "/5",
+          desc: it.task.split("\n")[0],
+          attrs: 'data-item="' + it.id + '"'
+        })).join("");
+        list.querySelectorAll("[data-item]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            selectedId = btn.getAttribute("data-item");
+            renderExplorer();
+            syncHash("explorer");
+            window.scrollTo(0, 0);
+          });
+        });
+        return;
+      }
+      const it = DATA.items.find(x => x.id === selectedId) || items[0];
+      selectedId = it.id;
+      list.classList.add("hidden");
+      detail.classList.remove("hidden");
+      el("explorer-title").textContent = it.id;
+      el("gold").textContent = "Gold answer: " + it.gold;
+      el("task").textContent = it.task;
+      el("cards").innerHTML = CONDS.map(cond => {
+        const run = (it.runs && it.runs[cond]) || {};
+        const ok = !!run.correct;
+        return '<article class="flex gap-4 py-5">' + playIcon() +
+          '<div class="min-w-0 flex-1">' +
+          '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">' +
+          '<h3 class="text-sm font-medium text-white">' + LABELS[cond] + "</h3>" +
+          '<span class="text-sm ' + (ok ? "text-emerald-400" : "text-rose-400") + '">' + (ok ? "correct" : "wrong") + "</span>" +
+          '<span class="text-sm text-zinc-500">' + (run.well_formed ? "tagged" : "untagged") + "</span></div>" +
+          '<p class="mt-1 text-sm text-zinc-400">pred: ' + escapeHtml(String(run.pred || "")) + "</p>" +
+          '<pre class="comp mt-3 rounded-lg bg-black/50 p-3 font-mono text-xs text-zinc-300">' +
+          escapeHtml(run.completion || "") + "</pre></div></article>";
+      }).join("");
+    }
 
     function fill(data) {
+      DATA = data;
       el("question").textContent = data.question;
-      el("finding").innerHTML = "<strong>Finding.</strong> " + data.finding;
+      el("finding").textContent = data.finding;
       const neu = data.eval.by_condition.neutral;
       const ev = data.eval.by_condition.eval;
       const mcN = (neu.math_code || neu.overall).acc;
       const mcE = (ev.math_code || ev.overall).acc;
-      el("stats").innerHTML =
-        '<div class="stat"><div class="v">' + mcN.toFixed(3) + " → " + mcE.toFixed(3) + '</div><div class="l">Math+code acc, neutral → eval framing</div></div>' +
-        '<div class="stat"><div class="v">' + Math.round(ev.encoding.acc * ev.encoding.n) + " / " + ev.encoding.n + '</div><div class="l">Encoding correct under eval framing</div></div>' +
-        '<div class="stat"><div class="v">AUC ' + data.interp.max_probe_auc.toFixed(2) + '</div><div class="l">Eval vs neutral probe from layer 1</div></div>' +
-        '<div class="stat"><div class="v">No causal gap</div><div class="l">Steering and patching leave accuracy flat</div></div>';
+      el("stats").innerHTML = [
+        { v: mcN.toFixed(3) + " → " + mcE.toFixed(3), l: "Math+code, neutral → eval" },
+        { v: Math.round(ev.encoding.acc * ev.encoding.n) + " / " + ev.encoding.n, l: "Encoding correct under eval" },
+        { v: "AUC " + data.interp.max_probe_auc.toFixed(2), l: "Eval vs neutral probe from layer 1" },
+        { v: "No causal gap", l: "Steering and patching leave accuracy flat" }
+      ].map(s => '<div class="rounded-xl border border-white/10 bg-white/[0.03] p-4"><div class="text-lg font-semibold text-white">' + s.v + '</div><div class="mt-1 text-xs text-zinc-500">' + s.l + "</div></div>").join("");
 
-      const domains = ["math", "code", "encoding"];
-      const domainSel = el("domain");
-      domainSel.innerHTML = "";
-      domains.forEach(d => {
-        const o = document.createElement("option");
-        o.value = d; o.textContent = d;
-        domainSel.appendChild(o);
+      el("overview-lessons").innerHTML = [
+        { title: "Math items", meta: "40 lessons", desc: "Skills the model has. Open an item and compare five evaluation wrappers.", go: "explorer", domain: "math" },
+        { title: "Code items", meta: "40 lessons", desc: "Print-prediction tasks under the same paired framings.", go: "explorer", domain: "code" },
+        { title: "Encoding items", meta: "0/40", desc: "A capability floor: the 1.5B model copies framing text instead of decoding.", go: "explorer", domain: "encoding" },
+        { title: "Paired eval", meta: "5 framings", desc: "Eval-like wrappers do not reduce accuracy versus a helpful baseline.", go: "results" },
+        { title: "Probes & steering", meta: "AUC 1.00", desc: "The eval/neutral contrast is linearly readable and not causal.", go: "internals" }
+      ].map(row => lessonRow({
+        title: row.title,
+        meta: row.meta,
+        desc: row.desc,
+        attrs: 'data-go="' + row.go + '"' + (row.domain ? ' data-domain="' + row.domain + '"' : "")
+      })).join("");
+      bindNav(el("overview-lessons"));
+
+      el("acc-panel").innerHTML = CONDS.map(cond => barRow(LABELS[cond], (data.eval.by_condition[cond].math_code || data.eval.by_condition[cond].overall).acc)).join("");
+      const aucs = data.interp.probe_auc_by_layer;
+      const w = 320, h = 160, p = 18;
+      const pts = aucs.map((a, i) => {
+        const x = p + (i / (aucs.length - 1)) * (w - 2 * p);
+        const y = h - p - (a - 0.4) / 0.6 * (h - 2 * p);
+        return x.toFixed(1) + "," + y.toFixed(1);
+      }).join(" ");
+      const y50 = h - p - (0.5 - 0.4) / 0.6 * (h - 2 * p);
+      el("probe").innerHTML =
+        '<line x1="' + p + '" y1="' + y50 + '" x2="' + (w - p) + '" y2="' + y50 + '" stroke="#3f3f46" stroke-dasharray="4 3"/>' +
+        '<polyline fill="none" stroke="#e4e4e7" stroke-width="2" points="' + pts + '"/>';
+      el("steer").innerHTML = data.interp.steering.map(r => barRow("α=" + r.alpha, r.induce_on_neutral)).join("");
+      const elicitLabels = { none: "Eval framing only", few_shot: "4-shot", prefill: "Prefill Final answer:", persona: "Try-hard persona" };
+      el("elicit-panel").innerHTML = Object.keys(data.elicit).map(k => barRow(elicitLabels[k] || k, data.elicit[k])).join("");
+
+      selectedId = null;
+      currentDomain = "math";
+      renderExplorer();
+      el("back-to-list").addEventListener("click", () => {
+        selectedId = null;
+        renderExplorer();
+        syncHash("explorer");
       });
-      domainSel.value = "math";
-
-      function itemsForDomain() {
-        return data.items.filter(it => it.domain === domainSel.value);
-      }
-
-      function populateItems(prefer) {
-        const sel = el("item");
-        const items = itemsForDomain();
-        sel.innerHTML = "";
-        items.forEach(it => {
-          const o = document.createElement("option");
-          o.value = it.id;
-          o.textContent = it.id + " — " + it.task.split("\n")[0].slice(0, 70);
-          sel.appendChild(o);
-        });
-        const ids = items.map(it => it.id);
-        sel.value = ids.includes(prefer) ? prefer : ids[0];
-      }
-
-      function renderItem() {
-        const it = data.items.find(x => x.id === el("item").value);
-        if (!it) return;
-        el("gold").textContent = "Gold answer: " + it.gold;
-        el("task").textContent = it.task;
-        const cards = el("cards");
-        cards.innerHTML = "";
-        CONDS.forEach(cond => {
-          const run = (it.runs && it.runs[cond]) || {};
-          const ok = !!run.correct;
-          const div = document.createElement("div");
-          div.className = "card";
-          div.innerHTML =
-            "<h3>" + LABELS[cond] + "</h3>" +
-            '<span class="pill ' + (ok ? "ok" : "bad") + '">' + (ok ? "correct" : "wrong") + "</span> " +
-            '<span class="pill">' + (run.well_formed ? "Final answer tagged" : "untagged") + "</span>" +
-            '<div class="pred">pred: ' + escapeHtml(String(run.pred || "")) + "</div>" +
-            "<pre>" + escapeHtml(run.completion || "") + "</pre>";
-          cards.appendChild(div);
-        });
-      }
-
-      function renderAcc() {
-        const table = data.eval.by_condition;
-        el("acc-panel").innerHTML = CONDS.map(cond => {
-          const acc = table[cond].overall.acc;
-          return '<div class="bar-row"><div>' + LABELS[cond] + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
-        }).join("");
-      }
-
-      function renderProbe() {
-        const aucs = data.interp.probe_auc_by_layer;
-        const w = 320, h = 160, p = 18;
-        const pts = aucs.map((a, i) => {
-          const x = p + (i / (aucs.length - 1)) * (w - 2 * p);
-          const y = h - p - (a - 0.4) / 0.6 * (h - 2 * p);
-          return x.toFixed(1) + "," + y.toFixed(1);
-        }).join(" ");
-        const y50 = h - p - (0.5 - 0.4) / 0.6 * (h - 2 * p);
-        el("probe").innerHTML =
-          '<line x1="' + p + '" y1="' + y50 + '" x2="' + (w - p) + '" y2="' + y50 + '" stroke="#d9d2c5" stroke-dasharray="4 3"/>' +
-          '<polyline fill="none" stroke="#1f4e79" stroke-width="2" points="' + pts + '"/>';
-      }
-
-      function renderSteer() {
-        el("steer").innerHTML = data.interp.steering.map(r => {
-          const acc = r.induce_on_neutral;
-          return '<div class="bar-row"><div>α=' + r.alpha + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
-        }).join("") + '<p class="hint" style="margin:8px 0 0">Bars: add v on neutral prompts. All stay near 0.38–0.41.</p>';
-      }
-
-      function renderElicit() {
-        const e = data.elicit;
-        const labels = { none: "Eval framing only", few_shot: "4-shot", prefill: "Prefill Final answer:", persona: "Try-hard persona" };
-        el("elicit-panel").innerHTML = Object.keys(e).map(k => {
-          return '<div class="bar-row"><div>' + (labels[k] || k) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (e[k] * 100) + '%"></div></div><div>' + e[k].toFixed(3) + "</div></div>";
-        }).join("");
-      }
-
-      domainSel.addEventListener("change", () => { populateItems(); renderItem(); });
-      el("item").addEventListener("change", renderItem);
-      populateItems("math-027");
-      renderItem();
-      renderAcc();
-      renderProbe();
-      renderSteer();
-      renderElicit();
-    }
-
-    function escapeHtml(s) {
-      return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      bindNav(document.querySelector("header"));
+      bindNav(document.querySelector(".hero"));
+      el("menu-btn").addEventListener("click", () => el("drawer").classList.remove("hidden"));
+      el("drawer-bg").addEventListener("click", () => el("drawer").classList.add("hidden"));
+      window.addEventListener("hashchange", applyHash);
+      refreshNav();
+      if (location.hash) applyHash();
     }
 
     function loadData(cb) {
