@@ -11,4 +11,3 @@ build/
 hf_home/
 wandb/
 logs/
-paper/results_auto.md

@@ -59,7 +59,7 @@ def build() -> gr.Blocks:
         gr.Markdown(
             f"""
 # Eval-aware sandbagging
-**{DATA['model_id']}** · [paper]({DATA['repo']}/blob/main/paper/paper.md) · [repo]({DATA['repo']})
+**{DATA['model_id']}** · [repo]({DATA['repo']})
 
 {DATA['question']}
 

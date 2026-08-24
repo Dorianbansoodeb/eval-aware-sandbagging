@@ -46,7 +46,6 @@ def main() -> None:
 
     bundle = {
         "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
-        "paper": "paper/paper.md",
         "repo": "https://github.com/Dorianbansoodeb/eval-aware-sandbagging",
         "question": (
             "Do instruction-tuned open-weight models systematically underperform "
@@ -68,11 +67,15 @@ def main() -> None:
     }
 
     out_docs = ROOT / "docs" / "data.json"
+    out_js = ROOT / "docs" / "data.js"
     out_demo = ROOT / "demo" / "data.json"
-    for out in (out_docs, out_demo):
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(bundle, indent=None, separators=(",", ":")))
-        print(f"Wrote {out} ({out.stat().st_size} bytes, {len(export_items)} items)")
+    payload = json.dumps(bundle, indent=None, separators=(",", ":"))
+    out_docs.parent.mkdir(parents=True, exist_ok=True)
+    out_docs.write_text(payload)
+    out_js.write_text("window.DEMO_DATA = " + payload + ";\n")
+    out_demo.parent.mkdir(parents=True, exist_ok=True)
+    out_demo.write_text(payload)
+    print(f"Wrote {out_docs}, {out_js}, {out_demo} ({len(export_items)} items)")
 
 
 if __name__ == "__main__":

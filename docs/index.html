@@ -93,7 +93,6 @@
       </div>
       <div class="links">
         <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">GitHub</a>
-        <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging/blob/main/paper/paper.md">Paper</a>
       </div>
     </header>
 
@@ -138,7 +137,7 @@
     <div class="panel" id="elicit-panel"></div>
 
     <footer>
-      Independent preprint, 24 August 2026. MIT license. Replay of committed results in
+      MIT license. Recorded generations from
       <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">Dorianbansoodeb/eval-aware-sandbagging</a>.
       To regenerate: <code>python src/run.py --stage all</code>.
     </footer>
@@ -153,22 +152,99 @@
       oversight: "Safety oversight"
     };
 
-    const data = window.__DATA__;
-
     function el(id) { return document.getElementById(id); }
 
-    function fill() {
+    function fill(data) {
       el("question").textContent = data.question;
       el("finding").innerHTML = "<strong>Finding.</strong> " + data.finding;
 
       const domains = ["math", "code", "encoding"];
       const domainSel = el("domain");
+      domainSel.innerHTML = "";
       domains.forEach(d => {
         const o = document.createElement("option");
         o.value = d; o.textContent = d;
         domainSel.appendChild(o);
       });
       domainSel.value = "math";
+
+      function itemsForDomain() {
+        return data.items.filter(it => it.domain === domainSel.value);
+      }
+
+      function populateItems(prefer) {
+        const sel = el("item");
+        const items = itemsForDomain();
+        sel.innerHTML = "";
+        items.forEach(it => {
+          const o = document.createElement("option");
+          o.value = it.id;
+          o.textContent = it.id + " — " + it.task.split("\n")[0].slice(0, 70);
+          sel.appendChild(o);
+        });
+        const ids = items.map(it => it.id);
+        sel.value = ids.includes(prefer) ? prefer : ids[0];
+      }
+
+      function renderItem() {
+        const it = data.items.find(x => x.id === el("item").value);
+        if (!it) return;
+        el("gold").textContent = "Gold answer: " + it.gold;
+        el("task").textContent = it.task;
+        const cards = el("cards");
+        cards.innerHTML = "";
+        CONDS.forEach(cond => {
+          const run = (it.runs && it.runs[cond]) || {};
+          const ok = !!run.correct;
+          const div = document.createElement("div");
+          div.className = "card";
+          div.innerHTML =
+            "<h3>" + LABELS[cond] + "</h3>" +
+            '<span class="pill ' + (ok ? "ok" : "bad") + '">' + (ok ? "correct" : "wrong") + "</span> " +
+            '<span class="pill">' + (run.well_formed ? "Final answer tagged" : "untagged") + "</span>" +
+            '<div class="pred">pred: ' + escapeHtml(String(run.pred || "")) + "</div>" +
+            "<pre>" + escapeHtml(run.completion || "") + "</pre>";
+          cards.appendChild(div);
+        });
+      }
+
+      function renderAcc() {
+        const table = data.eval.by_condition;
+        el("acc-panel").innerHTML = CONDS.map(cond => {
+          const acc = table[cond].overall.acc;
+          return '<div class="bar-row"><div>' + LABELS[cond] + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
+        }).join("");
+      }
+
+      function renderProbe() {
+        const aucs = data.interp.probe_auc_by_layer;
+        const w = 320, h = 160, p = 18;
+        const pts = aucs.map((a, i) => {
+          const x = p + (i / (aucs.length - 1)) * (w - 2 * p);
+          const y = h - p - (a - 0.4) / 0.6 * (h - 2 * p);
+          return x.toFixed(1) + "," + y.toFixed(1);
+        }).join(" ");
+        const y50 = h - p - (0.5 - 0.4) / 0.6 * (h - 2 * p);
+        el("probe").innerHTML =
+          '<line x1="' + p + '" y1="' + y50 + '" x2="' + (w - p) + '" y2="' + y50 + '" stroke="#d9d2c5" stroke-dasharray="4 3"/>' +
+          '<polyline fill="none" stroke="#1f4e79" stroke-width="2" points="' + pts + '"/>';
+      }
+
+      function renderSteer() {
+        el("steer").innerHTML = data.interp.steering.map(r => {
+          const acc = r.induce_on_neutral;
+          return '<div class="bar-row"><div>α=' + r.alpha + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
+        }).join("") + '<p class="hint" style="margin:8px 0 0">Bars: add v on neutral prompts. All stay near 0.38–0.41.</p>';
+      }
+
+      function renderElicit() {
+        const e = data.elicit;
+        const labels = { none: "Eval framing only", few_shot: "4-shot", prefill: "Prefill Final answer:", persona: "Try-hard persona" };
+        el("elicit-panel").innerHTML = Object.keys(e).map(k => {
+          return '<div class="bar-row"><div>' + (labels[k] || k) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (e[k] * 100) + '%"></div></div><div>' + e[k].toFixed(3) + "</div></div>";
+        }).join("");
+      }
+
       domainSel.addEventListener("change", () => { populateItems(); renderItem(); });
       el("item").addEventListener("change", renderItem);
       populateItems("math-017");
@@ -179,93 +255,25 @@
       renderElicit();
     }
 
-    function itemsForDomain() {
-      return data.items.filter(it => it.domain === el("domain").value);
-    }
-
-    function populateItems(prefer) {
-      const sel = el("item");
-      const items = itemsForDomain();
-      sel.innerHTML = "";
-      items.forEach(it => {
-        const o = document.createElement("option");
-        o.value = it.id;
-        o.textContent = it.id + " — " + it.task.split("\n")[0].slice(0, 70);
-        sel.appendChild(o);
-      });
-      const ids = items.map(it => it.id);
-      sel.value = ids.includes(prefer) ? prefer : ids[0];
-    }
-
-    function renderItem() {
-      const it = data.items.find(x => x.id === el("item").value);
-      el("gold").textContent = "Gold answer: " + it.gold;
-      el("task").textContent = it.task;
-      const cards = el("cards");
-      cards.innerHTML = "";
-      CONDS.forEach(cond => {
-        const run = (it.runs && it.runs[cond]) || {};
-        const ok = !!run.correct;
-        const div = document.createElement("div");
-        div.className = "card";
-        div.innerHTML =
-          "<h3>" + LABELS[cond] + "</h3>" +
-          '<span class="pill ' + (ok ? "ok" : "bad") + '">' + (ok ? "correct" : "wrong") + "</span> " +
-          '<span class="pill">' + (run.well_formed ? "Final answer tagged" : "untagged") + "</span>" +
-          '<div class="pred">pred: ' + escapeHtml(String(run.pred || "")) + "</div>" +
-          "<pre>" + escapeHtml(run.completion || "") + "</pre>";
-        cards.appendChild(div);
-      });
-    }
-
     function escapeHtml(s) {
       return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     }
 
-    function renderAcc() {
-      const panel = el("acc-panel");
-      const table = data.eval.by_condition;
-      const order = CONDS;
-      panel.innerHTML = order.map(cond => {
-        const acc = table[cond].overall.acc;
-        return '<div class="bar-row"><div>' + LABELS[cond] + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
-      }).join("");
+    function loadData(cb) {
+      if (window.DEMO_DATA) { cb(window.DEMO_DATA); return; }
+      var path = location.pathname.replace(/index\.html$/, "");
+      var dir = path.endsWith("/") ? path : path + "/";
+      var s = document.createElement("script");
+      s.src = dir + "data.js";
+      s.onload = function () { cb(window.DEMO_DATA); };
+      s.onerror = function () { el("finding").textContent = "Could not load demo data from " + s.src; };
+      document.head.appendChild(s);
     }
 
-    function renderProbe() {
-      const aucs = data.interp.probe_auc_by_layer;
-      const w = 320, h = 160, p = 18;
-      const pts = aucs.map((a, i) => {
-        const x = p + (i / (aucs.length - 1)) * (w - 2 * p);
-        const y = h - p - (a - 0.4) / 0.6 * (h - 2 * p);
-        return x.toFixed(1) + "," + y.toFixed(1);
-      }).join(" ");
-      const y50 = h - p - (0.5 - 0.4) / 0.6 * (h - 2 * p);
-      el("probe").innerHTML =
-        '<line x1="' + p + '" y1="' + y50 + '" x2="' + (w - p) + '" y2="' + y50 + '" stroke="#d9d2c5" stroke-dasharray="4 3"/>' +
-        '<polyline fill="none" stroke="#1f4e79" stroke-width="2" points="' + pts + '"/>';
-    }
-
-    function renderSteer() {
-      const rows = data.interp.steering;
-      el("steer").innerHTML = rows.map(r => {
-        const acc = r.induce_on_neutral;
-        return '<div class="bar-row"><div>α=' + r.alpha + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
-      }).join("") + '<p class="hint" style="margin:8px 0 0">Bars: add v on neutral prompts. All stay near 0.38–0.41.</p>';
-    }
-
-    function renderElicit() {
-      const e = data.elicit;
-      const labels = { none: "Eval framing only", few_shot: "4-shot", prefill: "Prefill Final answer:", persona: "Try-hard persona" };
-      el("elicit-panel").innerHTML = Object.keys(e).map(k => {
-        return '<div class="bar-row"><div>' + (labels[k] || k) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (e[k] * 100) + '%"></div></div><div>' + e[k].toFixed(3) + "</div></div>";
-      }).join("");
-    }
-
-    fetch("data.json")
-      .then(r => r.json())
-      .then(j => { window.__DATA__ = j; fill(); })
-      .catch(err => { el("finding").textContent = "Failed to load data.json: " + err; });
+    loadData(function (data) {
+      try { fill(data); }
+      catch (err) { el("finding").textContent = "Demo error: " + err; }
+    });
   </script>
 </body>
 </html>

@@ -8,7 +8,7 @@
 
 Local Gradio: `pip install -r demo/requirements.txt && PYTHONPATH=. python demo/app.py`
 
-Primary model: [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct). Paper: [`paper/paper.md`](paper/paper.md).
+Primary model: [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct).
 
 ## Main results
 
@@ -49,7 +49,6 @@ src/eval_run.py      # five framings, greedy generate, exact-match grader
 src/elicit.py        # few-shot, prefill, persona
 src/suffix_search.py # random suffixes minus eval vocabulary
 src/interp.py        # probes, difference-in-means, steer, patch
-paper/paper.md       # preprint
 results/             # committed tables, generations, figures
 ```
 
