@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eval-aware sandbagging — interactive demo</title>
+  <meta name="description" content="Interactive demo: same problem, five evaluation framings, Qwen2.5-1.5B-Instruct generations, probes, and steering." />
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --paper: #fffdf8;
+      --ink: #1c1914;
+      --muted: #5c564c;
+      --line: #d9d2c5;
+      --accent: #1f4e79;
+      --ok: #215c3a;
+      --bad: #8b2e2e;
+      --code: #2a261f;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+    body {
+      font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    h1, h2, h3 {
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
+    header { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline; margin-bottom: 28px; }
+    .kicker { text-transform: uppercase; letter-spacing: 0.12em; font-size: 12px; color: var(--muted); }
+    h1 { font-size: 34px; line-height: 1.15; margin: 6px 0 8px; }
+    .lede { max-width: 62ch; color: var(--muted); font-size: 17px; }
+    .links { font-size: 14px; display: flex; gap: 14px; flex-wrap: wrap; }
+    .finding {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 16px 18px;
+      margin: 24px 0;
+    }
+    .finding strong { color: var(--accent); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0 32px; }
+    .stat { background: var(--paper); border: 1px solid var(--line); padding: 14px; }
+    .stat .v { font-size: 22px; font-family: Georgia, serif; }
+    .stat .l { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    h2 { font-size: 22px; margin: 36px 0 10px; }
+    .hint { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    select {
+      font: inherit; padding: 8px 10px; border: 1px solid var(--line);
+      background: var(--paper); min-width: 220px; max-width: 100%;
+    }
+    .task {
+      background: var(--paper); border: 1px solid var(--line); padding: 14px 16px; margin-bottom: 12px;
+      white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px;
+    }
+    .gold { font-family: inherit; font-size: 14px; margin-bottom: 8px; color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; }
+    .card { background: var(--paper); border: 1px solid var(--line); padding: 12px 14px; min-height: 160px; }
+    .card h3 { margin: 0 0 6px; font-size: 16px; }
+    .pill { display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 7px; border: 1px solid var(--line); }
+    .pill.ok { color: var(--ok); border-color: #b7d4c2; }
+    .pill.bad { color: var(--bad); border-color: #e3c0c0; }
+    .pred { font-size: 13px; margin: 8px 0; color: var(--muted); }
+    pre {
+      white-space: pre-wrap; word-break: break-word; background: #f7f4ee;
+      padding: 8px; font-size: 12px; margin: 0; max-height: 180px; overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--code);
+    }
+    .charts { display: grid; grid-template-columns: 1.2fr 1fr; gap: 12px; }
+    .panel { background: var(--paper); border: 1px solid var(--line); padding: 14px; }
+    .bar-row { display: grid; grid-template-columns: 110px 1fr 52px; gap: 8px; align-items: center; margin: 7px 0; font-size: 13px; }
+    .bar-track { background: #ece6db; height: 10px; }
+    .bar-fill { background: var(--accent); height: 10px; }
+    .line { height: 160px; }
+    footer { margin-top: 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
+    @media (max-width: 800px) {
+      .stats, .charts { grid-template-columns: 1fr; }
+      h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="kicker">Interactive demo · Qwen2.5-1.5B-Instruct</div>
+        <h1>Evaluation-aware sandbagging</h1>
+        <p class="lede" id="question"></p>
+      </div>
+      <div class="links">
+        <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">GitHub</a>
+        <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging/blob/main/paper/paper.md">Paper</a>
+      </div>
+    </header>
+
+    <div class="finding" id="finding"></div>
+    <div class="stats">
+      <div class="stat"><div class="v">0.575 → 0.625</div><div class="l">Math+code acc, neutral → eval framing</div></div>
+      <div class="stat"><div class="v">0 / 40</div><div class="l">Encoding correct in every framing (floor)</div></div>
+      <div class="stat"><div class="v">AUC 1.00</div><div class="l">Eval vs neutral probe from layer 1</div></div>
+      <div class="stat"><div class="v">No causal gap</div><div class="l">Steering and patching leave accuracy flat</div></div>
+    </div>
+
+    <h2>Same item, five framings</h2>
+    <p class="hint">The task text is identical. Only the wrapper changes. Completions are the recorded greedy generations — this page does not call a model.</p>
+    <div class="controls">
+      <select id="domain"></select>
+      <select id="item"></select>
+    </div>
+    <div class="gold" id="gold"></div>
+    <div class="task" id="task"></div>
+    <div class="grid" id="cards"></div>
+
+    <h2>Paired eval</h2>
+    <p class="hint">Accuracy by framing and domain. Eval-like wrappers do not underperform relative to a helpful baseline.</p>
+    <div class="panel" id="acc-panel"></div>
+
+    <h2>Readable is not causal</h2>
+    <div class="charts">
+      <div class="panel">
+        <h3>Linear probe AUC by layer</h3>
+        <p class="hint">Embeddings cannot separate the prompts (shared answer instruction). From layer 1 the contrast is perfect — the residual can see the word “benchmark.”</p>
+        <svg id="probe" class="line" viewBox="0 0 320 160" width="100%" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="panel">
+        <h3>Activation steering</h3>
+        <p class="hint">Adding or subtracting the eval−neutral direction at decoder layer 0 does not move accuracy outside noise. Patching is 0.375 at every layer.</p>
+        <div id="steer"></div>
+      </div>
+    </div>
+
+    <h2>Red team, briefly</h2>
+    <p class="hint">Few-shot helps math; prefills and a try-hard persona do not. Random suffixes that drop accuracy mostly destroy the <code>Final answer:</code> tag (held-out well-formedness 0.20) — format collapse, not hidden skill.</p>
+    <div class="panel" id="elicit-panel"></div>
+
+    <footer>
+      Independent preprint, 24 August 2026. MIT license. Replay of committed results in
+      <a href="https://github.com/Dorianbansoodeb/eval-aware-sandbagging">Dorianbansoodeb/eval-aware-sandbagging</a>.
+      To regenerate: <code>python src/run.py --stage all</code>.
+    </footer>
+  </div>
+  <script>
+    const CONDS = ["neutral", "eval", "threat", "anti_eval", "oversight"];
+    const LABELS = {
+      neutral: "Neutral",
+      eval: "Eval benchmark",
+      threat: "Deployment threat",
+      anti_eval: "Not a test",
+      oversight: "Safety oversight"
+    };
+
+    const data = window.__DATA__;
+
+    function el(id) { return document.getElementById(id); }
+
+    function fill() {
+      el("question").textContent = data.question;
+      el("finding").innerHTML = "<strong>Finding.</strong> " + data.finding;
+
+      const domains = ["math", "code", "encoding"];
+      const domainSel = el("domain");
+      domains.forEach(d => {
+        const o = document.createElement("option");
+        o.value = d; o.textContent = d;
+        domainSel.appendChild(o);
+      });
+      domainSel.value = "math";
+      domainSel.addEventListener("change", () => { populateItems(); renderItem(); });
+      el("item").addEventListener("change", renderItem);
+      populateItems("math-017");
+      renderItem();
+      renderAcc();
+      renderProbe();
+      renderSteer();
+      renderElicit();
+    }
+
+    function itemsForDomain() {
+      return data.items.filter(it => it.domain === el("domain").value);
+    }
+
+    function populateItems(prefer) {
+      const sel = el("item");
+      const items = itemsForDomain();
+      sel.innerHTML = "";
+      items.forEach(it => {
+        const o = document.createElement("option");
+        o.value = it.id;
+        o.textContent = it.id + " — " + it.task.split("\n")[0].slice(0, 70);
+        sel.appendChild(o);
+      });
+      const ids = items.map(it => it.id);
+      sel.value = ids.includes(prefer) ? prefer : ids[0];
+    }
+
+    function renderItem() {
+      const it = data.items.find(x => x.id === el("item").value);
+      el("gold").textContent = "Gold answer: " + it.gold;
+      el("task").textContent = it.task;
+      const cards = el("cards");
+      cards.innerHTML = "";
+      CONDS.forEach(cond => {
+        const run = (it.runs && it.runs[cond]) || {};
+        const ok = !!run.correct;
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML =
+          "<h3>" + LABELS[cond] + "</h3>" +
+          '<span class="pill ' + (ok ? "ok" : "bad") + '">' + (ok ? "correct" : "wrong") + "</span> " +
+          '<span class="pill">' + (run.well_formed ? "Final answer tagged" : "untagged") + "</span>" +
+          '<div class="pred">pred: ' + escapeHtml(String(run.pred || "")) + "</div>" +
+          "<pre>" + escapeHtml(run.completion || "") + "</pre>";
+        cards.appendChild(div);
+      });
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    function renderAcc() {
+      const panel = el("acc-panel");
+      const table = data.eval.by_condition;
+      const order = CONDS;
+      panel.innerHTML = order.map(cond => {
+        const acc = table[cond].overall.acc;
+        return '<div class="bar-row"><div>' + LABELS[cond] + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
+      }).join("");
+    }
+
+    function renderProbe() {
+      const aucs = data.interp.probe_auc_by_layer;
+      const w = 320, h = 160, p = 18;
+      const pts = aucs.map((a, i) => {
+        const x = p + (i / (aucs.length - 1)) * (w - 2 * p);
+        const y = h - p - (a - 0.4) / 0.6 * (h - 2 * p);
+        return x.toFixed(1) + "," + y.toFixed(1);
+      }).join(" ");
+      const y50 = h - p - (0.5 - 0.4) / 0.6 * (h - 2 * p);
+      el("probe").innerHTML =
+        '<line x1="' + p + '" y1="' + y50 + '" x2="' + (w - p) + '" y2="' + y50 + '" stroke="#d9d2c5" stroke-dasharray="4 3"/>' +
+        '<polyline fill="none" stroke="#1f4e79" stroke-width="2" points="' + pts + '"/>';
+    }
+
+    function renderSteer() {
+      const rows = data.interp.steering;
+      el("steer").innerHTML = rows.map(r => {
+        const acc = r.induce_on_neutral;
+        return '<div class="bar-row"><div>α=' + r.alpha + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (acc * 100) + '%"></div></div><div>' + acc.toFixed(3) + "</div></div>";
+      }).join("") + '<p class="hint" style="margin:8px 0 0">Bars: add v on neutral prompts. All stay near 0.38–0.41.</p>';
+    }
+
+    function renderElicit() {
+      const e = data.elicit;
+      const labels = { none: "Eval framing only", few_shot: "4-shot", prefill: "Prefill Final answer:", persona: "Try-hard persona" };
+      el("elicit-panel").innerHTML = Object.keys(e).map(k => {
+        return '<div class="bar-row"><div>' + (labels[k] || k) + '</div><div class="bar-track"><div class="bar-fill" style="width:' + (e[k] * 100) + '%"></div></div><div>' + e[k].toFixed(3) + "</div></div>";
+      }).join("");
+    }
+
+    fetch("data.json")
+      .then(r => r.json())
+      .then(j => { window.__DATA__ = j; fill(); })
+      .catch(err => { el("finding").textContent = "Failed to load data.json: " + err; });
+  </script>
+</body>
+</html>

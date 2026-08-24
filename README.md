@@ -4,6 +4,10 @@
 
 **Answer at 1.5B (this repo):** no behavioral sandbagging; a perfectly readable eval-vs-neutral residual direction that does **not** causally control accuracy.
 
+**Live demo:** [dorianbansoodeb.github.io/eval-aware-sandbagging](https://dorianbansoodeb.github.io/eval-aware-sandbagging/) — pick an item, swap five framings, inspect the recorded answers. No GPU.
+
+Local Gradio: `pip install -r demo/requirements.txt && PYTHONPATH=. python demo/app.py`
+
 Primary model: [`Qwen/Qwen2.5-1.5B-Instruct`](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct). Paper: [`paper/paper.md`](paper/paper.md).
 
 ## Main results
@@ -38,6 +42,8 @@ Config lives in [`configs/default.yaml`](configs/default.yaml). Point `model_id`
 ## What is in the repo
 
 ```
+docs/                # GitHub Pages demo (static, replays committed generations)
+demo/app.py          # local Gradio explorer
 src/build_items.py   # 120 machine-gradable items
 src/eval_run.py      # five framings, greedy generate, exact-match grader
 src/elicit.py        # few-shot, prefill, persona
@@ -49,7 +55,7 @@ results/             # committed tables, generations, figures
 
 ## Resume bullet
 
-Designed a paired evaluation of evaluation-aware sandbagging on Qwen2.5-1.5B-Instruct (encoding, code, math; five framings); adversarially searched non-lexical suffixes and elicitation interventions; and tested linear mediation with residual-stream probes, activation steering, and patching. Found no sandbagging gap at this scale: eval-like framings did not reduce accuracy, a perfectly readable eval-vs-neutral direction (AUC 1.0 from layer 1) did not causally control performance, and suffix-induced drops were format collapse rather than selective underperformance.
+Designed a paired evaluation of evaluation-aware sandbagging on Qwen2.5-1.5B-Instruct (encoding, code, math; five framings); adversarially searched non-lexical suffixes and elicitation interventions; and tested linear mediation with residual-stream probes, activation steering, and patching. Found no sandbagging gap at this scale: eval-like framings did not reduce accuracy, a perfectly readable eval-vs-neutral direction (AUC 1.0 from layer 1) did not causally control performance, and suffix-induced drops were format collapse rather than selective underperformance. Interactive demo: https://dorianbansoodeb.github.io/eval-aware-sandbagging/
 
 ## License
 
